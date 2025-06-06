@@ -1,4 +1,4 @@
-# 📊 High-Level Package Diagram
+# 📊 Diagramme de package de haut niveau
 ![High Level Package Diagram](https://raw.githubusercontent.com/guarickgit/holbertonschool-hbnb/main/part1/package_diagram.png)
 
 # 🧭 Vue d’ensemble du fonctionnement
