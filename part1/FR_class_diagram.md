@@ -1,5 +1,5 @@
 
-# 🧾 Diagramme de classe détaillé pour la couche logique métier
+# 📐 Diagramme de classe détaillé pour la couche logique métier
 
 ```mermaid
 classDiagram
