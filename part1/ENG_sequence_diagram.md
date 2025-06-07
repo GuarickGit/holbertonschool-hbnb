@@ -1,7 +1,6 @@
 
 # 📲 Sequence Diagrams for API Calls
 
----
 
 ## 🧍 Sequence Diagram: User Registration
 ```mermaid
