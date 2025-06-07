@@ -60,7 +60,7 @@ ClassReview "*" --> "1" ClassUser : written_by
 Ce diagramme de classes modélise la couche métier de l’application **HBnB**, en se concentrant sur les entités principales :
 **User**, **Place**, **Review**, et **Amenity**.
 
-L’objectif est de représenter leurs **attributs**, **méthodes** et **relations**, conformément aux règles métier fournies dans la consigne.
+L’objectif est de représenter leurs **attributs**, **méthodes** et **relations**, conformément aux règles métier.
 
 ---
 
