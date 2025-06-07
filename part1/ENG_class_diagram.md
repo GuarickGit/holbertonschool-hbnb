@@ -1,5 +1,5 @@
 
-# 🧾 Detailed Class Diagram for the Business Logic Layer
+# 📐 Detailed Class Diagram for the Business Logic Layer
 
 ```mermaid
 classDiagram
