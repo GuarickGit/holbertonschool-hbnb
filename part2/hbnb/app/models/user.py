@@ -16,3 +16,21 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
+
+    def update(self, data):
+        if "first_name" in data:
+            if not data["first_name"] or len(data["first_name"]) > 50:
+                raise ValueError("Invalid first_name")
+            self.first_name = data["first_name"]
+
+        if "last_name" in data:
+            if not data["last_name"] or len(data["last_name"]) > 50:
+                raise ValueError("Invalid last_name")
+            self.last_name = data["last_name"]
+
+        if "email" in data:
+            if not data["email"] or not is_valid_email(data["email"]):
+                raise ValueError("Invalid email")
+            self.email = data["email"]
+
+        self.save()  # met à jour updated_at
