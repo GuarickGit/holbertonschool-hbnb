@@ -28,7 +28,7 @@ class Place(BaseModel):
     def add_amenity(self, amenity):
         self.amenities.append(amenity)
 
-    def update_place(self, place_data):
+    def update(self, place_data):
 
         if "title" in place_data:
             if not isinstance(place_data["title"], str) or not place_data["title"] or len(place_data["title"]) > 100:
