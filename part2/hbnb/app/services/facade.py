@@ -119,7 +119,7 @@ class HBnBFacade:
             place.amenities = new_amenities
 
         # Mise à jour des autres champs
-        place.update_place(place_data)
+        place.update(place_data)
 
         return place
 
