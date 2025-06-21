@@ -42,7 +42,6 @@ class ReviewList(Resource):
             'place_id': new_review.place.id
         }, 201
 
-    @api.marshal_with(review_model, as_list=True)
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
         """Retrieve a list of all reviews"""
@@ -60,14 +59,13 @@ class ReviewList(Resource):
 
 @api.route('/<review_id>')
 class ReviewResource(Resource):
-    @api.marshal_with(review_model)
     @api.response(200, 'Review details retrieved successfully')
     @api.response(404, 'Review not found')
     def get(self, review_id):
         """Get review details by ID"""
         review = facade.get_review(review_id)
         if not review:
-            return {'error': 'Review not found'}, 404
+            api.abort(404, 'Review not found')
         return {
             'id': review.id,
             'text': review.text,
@@ -104,7 +102,6 @@ class ReviewResource(Resource):
 
 @api.route('/places/<place_id>/reviews')
 class PlaceReviewList(Resource):
-    @api.marshal_with(review_model, as_list=True)
     @api.response(200, 'List of reviews for the place retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
