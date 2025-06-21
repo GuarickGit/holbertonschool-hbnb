@@ -2,6 +2,7 @@ from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
+from app.models.review import Review
 
 
 class HBnBFacade:
@@ -121,3 +122,78 @@ class HBnBFacade:
         place.update_place(place_data)
 
         return place
+
+    # Review Methods
+
+    def create_review(self, review_data):
+        # 1. Extraire les IDs
+        user_id = review_data.get("user_id")
+        place_id = review_data.get("place_id")
+        rating = review_data.get("rating")
+
+        # 2. Vérifier que l'owner existe
+        user = self.user_repo.get(user_id)
+        if not user:
+            raise ValueError("User not found")
+
+        # 3. Vérifier que la place existe
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place not found")
+
+        # 4. Vérifier que le rating existe
+        if rating is None or not isinstance(rating, int) or not (1 <= rating <= 5):
+            raise ValueError("Rating must be an integer between 1 and 5")
+
+        # 5. Récupérer le texte
+        text = review_data.get("text")
+        if not text or not isinstance(text, str):
+            raise ValueError("Invalid review text")
+
+        # 6. Créer le Review
+        review = Review(text=text, rating=rating, user=user, place=place)
+
+        # 7. Ajouter à la place
+        place.reviews.append(review)
+
+        # 8. Ajouter au repo
+        self.review_repo.add(review)
+
+        # 9. Retourner
+        return review
+
+    def get_review(self, review_id):
+        return self.review_repo.get(review_id)
+
+    def get_all_reviews(self):
+        return self.review_repo.get_all()
+
+    def get_reviews_by_place(self, place_id):
+        return [review for review in self.review_repo.get_all() if review.place.id == place_id]
+
+    def update_review(self, review_id, review_data):
+        review = self.get_review(review_id)
+        if not review:
+            return None
+
+        # Ne pas permettre de changer user ou place
+        review_data.pop("user_id", None)
+        review_data.pop("place_id", None)
+
+        # Mise à jour des champs valides
+        review.update(review_data)
+        return review
+
+    def delete_review(self, review_id):
+        review = self.get_review(review_id)
+        if not review:
+            return False
+
+        # Retirer la review du repo
+        self.review_repo.delete(review_id)
+
+        # Retirer aussi la review de la place correspondante
+        if review.place and review in review.place.reviews:
+            review.place.reviews.remove(review)
+
+        return True
