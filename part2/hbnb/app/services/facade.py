@@ -1,6 +1,7 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.user import User
 from app.models.amenity import Amenity
+from app.models.place import Place
 
 class HBnBFacade:
     def __init__(self):
@@ -42,3 +43,29 @@ class HBnBFacade:
     def get_place(self, place_id):
         # Logic will be implemented in later tasks
         pass
+
+    # Place Methods
+
+    def create_place(self, place_data):
+        # Placeholder for logic to create a place, including validation for price, latitude, and longitude
+        owner_id = place_data.get["owner_id"]
+        owner = self.user_repo.get(owner_id)
+        if not owner:
+            raise ValueError("Owner not found")
+
+        amenities = place_data.get["amenities"]
+        amenities_id = self.amenity_repo.get(id)
+        if not amenities_id:
+            raise ValueError("Invalid amenity ID: <id>")
+
+        place = Place(**place_data)
+        self.place_repo.add(place)
+        return place
+
+    def get_place(self, place_id):
+        # Placeholder for logic to retrieve a place by ID, including associated owner and amenities
+        return self.place_repo.get(place_id)
+        pass
+
+    def get_all_places(self):
+        return self.place_repo.get_all()
