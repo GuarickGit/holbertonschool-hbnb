@@ -3,7 +3,7 @@ from app.services import facade
 
 api = Namespace('users', description='User operations')
 
-# Define the user model for input validation and documentation
+# Define the user model for request validation and Swagger documentation
 user_model = api.model('User', {
     'first_name': fields.String(required=True, description='First name of the user'),
     'last_name': fields.String(required=True, description='Last name of the user'),
@@ -17,7 +17,11 @@ class UserList(Resource):
     @api.response(201, 'User successfully created')
     @api.response(400, 'Bad request: Email already registered, missing field, or invalid format')
     def post(self):
-        """Register a new user"""
+        """
+        Create a new user.
+
+        Validates the request payload and registers a new user if the email is not already used.
+        """
         user_data = api.payload
 
         # Simulate email uniqueness check (to be replaced by real validation with persistence)
@@ -39,7 +43,12 @@ class UserList(Resource):
 
     @api.response(200, 'List of users retrieved successfully')
     def get(self):
-        """Retrieve the list of all users"""
+        """
+        Retrieve all users.
+
+        Returns:
+            A list of all registered users with basic details.
+        """
         users = facade.get_all_users()
         return [
             {
@@ -56,7 +65,15 @@ class UserResource(Resource):
     @api.response(200, 'User details retrieved successfully')
     @api.response(404, 'User not found')
     def get(self, user_id):
-        """Get user details by ID"""
+        """
+        Retrieve a user's details by ID.
+
+        Args:
+            user_id (str): The unique ID of the user.
+
+        Returns:
+            The user information if found.
+        """
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
@@ -72,7 +89,14 @@ class UserResource(Resource):
     @api.response(400, 'Bad request: invalid input or email already registered')
     @api.response(404, 'User not found')
     def put(self, user_id):
-        """Update a user's information"""
+        """
+        Update an existing user's information.
+
+        Checks for email duplication before applying updates.
+
+        Args:
+            user_id (str): The unique ID of the user to update.
+        """
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404

@@ -1,7 +1,29 @@
 from app.models.base_model import BaseModel
 
+
 class Place(BaseModel):
+    """
+    Represents a place listing in the HBnB application.
+
+    Inherits from BaseModel and includes details like title, price, location,
+    owner, amenities, and reviews.
+    """
+
     def __init__(self, title, description, price, latitude, longitude, owner):
+        """
+        Initialize a new Place instance with validated attributes.
+
+        Args:
+            title (str): Title of the place (max 100 characters).
+            description (str): Optional description of the place.
+            price (float): Price of the place. Must be > 0.
+            latitude (float): Latitude (-90 to 90).
+            longitude (float): Longitude (-180 to 180).
+            owner (User): The user who owns the place.
+
+        Raises:
+            ValueError: If any of the parameters are invalid.
+        """
         super().__init__()
 
         if not isinstance(title, str) or not title or len(title) > 100:
@@ -23,12 +45,33 @@ class Place(BaseModel):
         self.amenities = []
 
     def add_review(self, review):
+        """
+        Add a review to the place.
+
+        Args:
+            review (Review): The review to add.
+        """
         self.reviews.append(review)
 
     def add_amenity(self, amenity):
+        """
+        Add an amenity to the place.
+
+        Args:
+            amenity (Amenity): The amenity to add.
+        """
         self.amenities.append(amenity)
 
     def update(self, place_data):
+        """
+        Update the place's attributes using a dictionary of new values.
+
+        Args:
+            place_data (dict): Dictionary of attributes to update.
+
+        Raises:
+            ValueError: If any provided field is invalid.
+        """
 
         if "title" in place_data:
             if not isinstance(place_data["title"], str) or not place_data["title"] or len(place_data["title"]) > 100:

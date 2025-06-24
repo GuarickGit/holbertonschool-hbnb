@@ -3,7 +3,9 @@ from app.services import facade
 
 api = Namespace('places', description='Place operations')
 
-# Define the models for related entities
+# --------------------------------------------
+# Nested models (owner, amenity, review)
+# --------------------------------------------
 amenity_model = api.model('PlaceAmenity', {
     'id': fields.String(description='Amenity ID'),
     'name': fields.String(description='Name of the amenity')
@@ -23,7 +25,9 @@ review_model = api.model('PlaceReview', {
     'user_id': fields.String(description='ID of the user')
 })
 
-# Model utilisé uniquement pour les POST / PUT
+# --------------------------------------------
+# Input model (used for POST/PUT)
+# --------------------------------------------
 place_input_model = api.model('PlaceInput', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
@@ -34,7 +38,9 @@ place_input_model = api.model('PlaceInput', {
     'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
-
+# --------------------------------------------
+# Output model (GET)
+# --------------------------------------------
 place_model = api.model('Place', {
     'title': fields.String(required=True, description='Title of the place'),
     'description': fields.String(description='Description of the place'),
@@ -50,11 +56,19 @@ place_model = api.model('Place', {
 
 @api.route('/')
 class PlaceList(Resource):
+    """
+    Collection resource for creating and listing places.
+    """
     @api.expect(place_input_model, validate=True)
     @api.response(201, 'Place successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
-        """Register a new place"""
+        """
+        Create a new place.
+
+        Validates the input payload and registers a place that links
+        to an existing owner and a list of amenities.
+        """
         place_data = api.payload
 
         try:
@@ -73,7 +87,12 @@ class PlaceList(Resource):
 
     @api.response(200, 'List of places retrieved successfully')
     def get(self):
-        """Retrieve a list of all places"""
+        """
+        Retrieve all places.
+
+        Returns:
+            A list of places with minimal details (owner ID only).
+        """
         places = facade.get_all_places()
         return [
             {
@@ -90,10 +109,18 @@ class PlaceList(Resource):
 
 @api.route('/<place_id>')
 class PlaceResource(Resource):
+    """
+    Item resource for retrieving or updating a single place.
+    """
     @api.response(200, 'Place details retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
-        """Get place details by ID"""
+        """
+        Retrieve a place by ID.
+
+        Returns:
+            Full details, including nested owner, amenities and reviews.
+        """
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
@@ -127,7 +154,16 @@ class PlaceResource(Resource):
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
     def put(self, place_id):
-        """Update a place's information"""
+        """
+        Update an existing place.
+
+        Args:
+            place_id (str): ID of the place to update.
+
+        Notes:
+            - `owner_id` is immutable once the place is created.
+            - Amenities list is fully replaced if provided.
+        """
         place_data = api.payload
         try:
             updated_place = facade.update_place(place_id, place_data)

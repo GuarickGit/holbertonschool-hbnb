@@ -3,7 +3,7 @@ from app.services import facade
 
 api = Namespace('reviews', description='Review operations')
 
-# input model = pour POST / PUT
+# Input model for POST/PUT
 review_input_model = api.model('ReviewInput', {
     'text': fields.String(required=True, description='Text of the review'),
     'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
@@ -11,7 +11,7 @@ review_input_model = api.model('ReviewInput', {
     'place_id': fields.String(required=True, description='ID of the place')
 })
 
-# output model = pour GET
+# Output model for GET
 review_model = api.model('Review', {
     'id': fields.String(description='Review ID'),
     'text': fields.String(description='Text of the review'),
@@ -27,7 +27,11 @@ class ReviewList(Resource):
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
     def post(self):
-        """Register a new review"""
+        """
+        Create a new review.
+
+        Validates the input and registers a new review linked to a user and a place.
+        """
         review_data = api.payload
 
         try:
@@ -44,7 +48,12 @@ class ReviewList(Resource):
 
     @api.response(200, 'List of reviews retrieved successfully')
     def get(self):
-        """Retrieve a list of all reviews"""
+        """
+        Retrieve all reviews.
+
+        Returns:
+            A list of all reviews with their associated user and place IDs.
+        """
         reviews = facade.get_all_reviews()
         return [
             {
@@ -62,7 +71,9 @@ class ReviewResource(Resource):
     @api.response(200, 'Review details retrieved successfully')
     @api.response(404, 'Review not found')
     def get(self, review_id):
-        """Get review details by ID"""
+        """
+        Retrieve a specific review by ID.
+        """
         review = facade.get_review(review_id)
         if not review:
             api.abort(404, 'Review not found')
@@ -79,7 +90,11 @@ class ReviewResource(Resource):
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
     def put(self, review_id):
-        """Update a review's information"""
+        """
+        Update an existing review.
+
+        Only the `text` and `rating` fields can be updated.
+        """
         review_data = api.payload
         try:
             updated_review = facade.update_review(review_id, review_data)
@@ -93,7 +108,9 @@ class ReviewResource(Resource):
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
     def delete(self, review_id):
-        """Delete a review"""
+        """
+        Delete a review by ID.
+        """
         success = facade.delete_review(review_id)
         if not success:
             return {'error': 'Review not found'}, 404
@@ -105,7 +122,12 @@ class PlaceReviewList(Resource):
     @api.response(200, 'List of reviews for the place retrieved successfully')
     @api.response(404, 'Place not found')
     def get(self, place_id):
-        """Get all reviews for a specific place"""
+        """
+        Retrieve all reviews associated with a specific place.
+
+        Args:
+            place_id (str): ID of the place whose reviews are requested.
+        """
         place = facade.get_place(place_id)
         if not place:
             return {'error': 'Place not found'}, 404
