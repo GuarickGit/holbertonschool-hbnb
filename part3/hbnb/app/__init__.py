@@ -6,9 +6,7 @@ from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
 
 from werkzeug.utils import import_string
-from flask_bcrypt import Bcrypt
-
-bcrypt = Bcrypt()
+from app.extensions import bcrypt
 
 def create_app(config_class="config.DevelopmentConfig"):
     """
