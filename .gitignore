@@ -5130,8 +5130,11 @@ part3/hbnb/app/services/__pycache__/facade.cpython-312.pyc
 part3/hbnb/app/services/__pycache__/
 part3/hbnb/app/__pycache__/
 part3/hbnb/app/persistence/__pycache__/
-
+part3/hbnb/app/api/__pycache__/
 part3/hbnb/app/services/__pycache__/facade.cpython-312.pyc
 part3/hbnb/app/api/__pycache__/__init__.cpython-312.pyc
 part3/hbnb/app/api/v1/__pycache__/__init__.cpython-312.pyc
 part3/hbnb/app/models/__pycache__/__init__.cpython-312.pyc
+part3/hbnb/__pycache__/
+part3/hbnb/app/api/v1/__pycache__/
+part3/hbnb/app/models/__pycache__/
