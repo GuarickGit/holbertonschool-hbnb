@@ -1,5 +1,6 @@
 from app.models.base_model import BaseModel
 from app.validators import is_valid_email
+from app import bcrypt
 
 
 class User(BaseModel):
@@ -10,7 +11,7 @@ class User(BaseModel):
     such as first name, last name, email, and admin status.
     """
 
-    def __init__(self, first_name, last_name, email, is_admin=False):
+    def __init__(self, first_name, last_name, email, password, is_admin=False):
         """
         Initialize a new User instance with validation.
 
@@ -36,6 +37,8 @@ class User(BaseModel):
         self.last_name = last_name
         self.email = email
         self.is_admin = is_admin
+        self.hash_password(password)
+
 
     def update(self, data):
         """
@@ -63,3 +66,12 @@ class User(BaseModel):
             self.email = data["email"]
 
         self.save()  # met à jour updated_at
+
+
+    def hash_password(self, password):
+        """Hashes the password before storing it."""
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_password(self, password):
+        """Verifies if the provided password matches the hashed password."""
+        return bcrypt.check_password_hash(self.password, password)
