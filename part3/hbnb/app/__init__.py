@@ -6,8 +6,9 @@ from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
 
 from werkzeug.utils import import_string
+from flask_bcrypt import Bcrypt
 
-
+bcrypt = Bcrypt()
 
 def create_app(config_class="config.DevelopmentConfig"):
     """
@@ -23,6 +24,8 @@ def create_app(config_class="config.DevelopmentConfig"):
 
     api = Api(app, version='1.0', title='HBnB API',
               description='HBnB Application API')
+
+    bcrypt.init_app(app)
 
     # Register the users namespace
     api.add_namespace(users_ns, path='/api/v1/users')
