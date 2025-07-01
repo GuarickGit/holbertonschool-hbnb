@@ -7,6 +7,9 @@ from app.api.v1.reviews import api as reviews_ns
 
 from werkzeug.utils import import_string
 from app.extensions import bcrypt
+from flask_jwt_extended import JWTManager
+
+jwt = JWTManager()
 
 def create_app(config_class="config.DevelopmentConfig"):
     """
@@ -24,6 +27,7 @@ def create_app(config_class="config.DevelopmentConfig"):
               description='HBnB Application API')
 
     bcrypt.init_app(app)
+    jwt.init_app(app)
 
     # Register the users namespace
     api.add_namespace(users_ns, path='/api/v1/users')
