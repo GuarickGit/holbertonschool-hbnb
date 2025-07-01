@@ -175,7 +175,7 @@ class PlaceResource(Resource):
         if not place:
             return {'error': 'Place not found'}, 404
         if place.owner.id != current_user['id']:
-            return {'error': 'Unauthorized: not the owner of this place'}, 403
+            return {'error': 'Unauthorized action'}, 403
 
         place_data = api.payload
         try:
