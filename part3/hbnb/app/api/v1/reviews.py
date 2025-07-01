@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('reviews', description='Review operations')
 
@@ -7,7 +8,6 @@ api = Namespace('reviews', description='Review operations')
 review_input_model = api.model('ReviewInput', {
     'text': fields.String(required=True, description='Text of the review'),
     'rating': fields.Integer(required=True, description='Rating of the place (1-5)'),
-    'user_id': fields.String(required=True, description='ID of the user'),
     'place_id': fields.String(required=True, description='ID of the place')
 })
 
@@ -26,13 +26,37 @@ class ReviewList(Resource):
     @api.expect(review_input_model, validate=True)
     @api.response(201, 'Review successfully created')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def post(self):
         """
         Create a new review.
 
         Validates the input and registers a new review linked to a user and a place.
         """
+        current_user = get_jwt_identity()
         review_data = api.payload
+
+        place_id = review_data.get('place_id')
+        if not place_id:
+            return {'error': 'place_id is required'}, 400
+
+        # Vérifie que le lieu existe
+        place = facade.get_place(place_id)
+        if not place:
+            return {'error': 'Place not found'}, 404
+
+        # Interdit de reviewer son propre lieu
+        if place.owner.id == current_user['id']:
+            return {'error': 'You cannot review your own place.'}, 400
+
+        # Vérifie si l'utilisateur a déjà review ce lieu
+        existing_reviews = facade.get_reviews_by_place(place_id)
+        for review in existing_reviews:
+            if review.user.id == current_user['id']:
+                return {'error': 'You have already reviewed this place.'}, 400
+
+        # Remplace user_id par celui authentifié (évite la triche)
+        review_data['user_id'] = current_user['id']
 
         try:
             new_review = facade.create_review(review_data)
