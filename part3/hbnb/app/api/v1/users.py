@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 api = Namespace('users', description='User operations')
 
@@ -11,6 +12,10 @@ user_model = api.model('User', {
     'password': fields.String(required=True, description='Password of the user')
 })
 
+user_update_model = api.model('UserUpdate', {
+    'first_name': fields.String(required=True),
+    'last_name': fields.String(required=True)
+})
 
 @api.route('/')
 class UserList(Resource):
@@ -83,30 +88,30 @@ class UserResource(Resource):
             'email': user.email
         }, 200
 
-    @api.expect(user_model, validate=True)
+    @api.expect(user_update_model, validate=True)
     @api.response(200, 'User successfully updated')
     @api.response(400, 'Bad request: invalid input or email already registered')
     @api.response(404, 'User not found')
+    @jwt_required()
     def put(self, user_id):
         """
         Update an existing user's information.
 
-        Checks for email duplication before applying updates.
-
         Args:
             user_id (str): The unique ID of the user to update.
         """
+        current_user = get_jwt_identity()
+        user_data = api.payload
+
         user = facade.get_user(user_id)
         if not user:
             return {'error': 'User not found'}, 404
 
-        user_data = api.payload
+        if user.id != current_user['id']:
+            return {'error': 'Unauthorized action.'}, 403
 
-        # Check if email belongs to another user
-        existing_user = facade.get_user_by_email(user_data['email'])
-        if existing_user and existing_user.id != user_id:
-            return {'error': 'Email already registered by another user'}, 400
-
+        if 'email' in user_data or 'password' in user_data:
+            return {'error': 'You cannot modify email or password.'}, 400
         try:
             user.update(user_data)
         except ValueError as e:
