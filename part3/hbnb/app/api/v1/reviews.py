@@ -123,21 +123,14 @@ class ReviewResource(Resource):
         current_user = get_jwt_identity()
         review_data = api.payload
 
-        user_id = review_data.get('user_id')
-        if not user_id:
-            return {'error': 'user_id is required'}, 400
-
         # Vérifie que la review existe
-        review = facade.get_place(review_id)
+        review = facade.get_review(review_id)
         if not review:
             return {'error': 'Review not found'}, 404
 
         # User n'a pas crée la review
         if review.user.id != current_user['id']:
             return {'error': 'Unauthorized action.'}, 403
-
-        if not updated_review:
-            return {'error': 'Review not found'}, 404
 
         try:
             updated_review = facade.update_review(review_id, review_data)
