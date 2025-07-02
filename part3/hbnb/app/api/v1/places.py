@@ -158,7 +158,7 @@ class PlaceResource(Resource):
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
-    @jwt_required
+    @jwt_required()
     def put(self, place_id):
         """
         Update an existing place.
