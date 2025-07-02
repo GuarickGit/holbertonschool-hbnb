@@ -113,19 +113,36 @@ class ReviewResource(Resource):
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
+    @jwt_required()
     def put(self, review_id):
         """
         Update an existing review.
 
         Only the `text` and `rating` fields can be updated.
         """
+        current_user = get_jwt_identity()
         review_data = api.payload
+
+        user_id = review_data.get('user_id')
+        if not user_id:
+            return {'error': 'user_id is required'}, 400
+
+        # Vérifie que la review existe
+        review = facade.get_place(review_id)
+        if not review:
+            return {'error': 'Review not found'}, 404
+
+        # User n'a pas crée la review
+        if review.user.id != current_user['id']:
+            return {'error': 'Unauthorized action.'}, 403
+
+        if not updated_review:
+            return {'error': 'Review not found'}, 404
+
         try:
             updated_review = facade.update_review(review_id, review_data)
         except ValueError as e:
             return {'error': str(e)}, 400
-        if not updated_review:
-            return {'error': 'Review not found'}, 404
 
         return {'message': 'Review updated successfully'}, 200
 
