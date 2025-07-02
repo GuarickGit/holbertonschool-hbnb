@@ -5,6 +5,7 @@ from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.places import api as places_ns
 from app.api.v1.reviews import api as reviews_ns
 from app.api.v1.auth import api as auth_ns
+from app.api.v1.admins import api as admins_ns
 
 from werkzeug.utils import import_string
 from app.extensions import bcrypt
@@ -51,6 +52,9 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(places_ns, path='/api/v1/places')
     # Register the reviews namespace
     api.add_namespace(reviews_ns, path='/api/v1/reviews')
+    # Register the auth namespace
     api.add_namespace(auth_ns, path='/api/v1/auth')
+    # Register the admin namespace
+    api.add_namespace(admins_ns, path='/api/v1/admins')
 
     return app
