@@ -24,8 +24,21 @@ def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
     app.config.from_object(import_string(config_class))
 
-    api = Api(app, version='1.0', title='HBnB API',
-              description='HBnB Application API')
+    authorizations = {
+    'Bearer': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization',
+        'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"'
+    }
+}
+
+    api = Api(app,
+            version='1.0',
+            title='HBnB API',
+            description='HBnB Application API',
+            authorizations=authorizations,
+            security='Bearer')
 
     bcrypt.init_app(app)
     jwt.init_app(app)
