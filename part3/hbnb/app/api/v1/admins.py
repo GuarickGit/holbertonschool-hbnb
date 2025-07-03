@@ -28,11 +28,12 @@ amenity_admin_model = api.model('Amenity_Admin', {
 })
 
 place_input_admin_model = api.model('PlaceInput_Admin', {
-    'name': fields.String(required=True, description='Name of the place'),
-    'description': fields.String(required=True, description='Description'),
-    'address': fields.String(required=True, description='Address'),
-    'city_id': fields.String(required=True, description='City ID'),
-    'owner_id': fields.String(description='Owner ID (admin only)')
+    'title': fields.String(required=True, description='Title of the place'),
+    'description': fields.String(description='Description of the place'),
+    'price': fields.Float(required=True, description='Price per night'),
+    'latitude': fields.Float(required=True, description='Latitude of the place'),
+    'longitude': fields.Float(required=True, description='Longitude of the place'),
+    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
 review_admin_model = api.model('Review_Admin', {
