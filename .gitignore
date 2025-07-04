@@ -5886,3 +5886,5 @@ venv/lib/python3.12/site-packages/sqlalchemy-2.0.41.dist-info/REQUESTED
 venv/lib/python3.12/site-packages/sqlalchemy-2.0.41.dist-info/top_level.txt
 venv/lib/python3.12/site-packages/sqlalchemy-2.0.41.dist-info/WHEEL
 venv/lib/python3.12/site-packages/sqlalchemy-2.0.41.dist-info/licenses/LICENSE
+part3/hbnb/instance/development.db
+part3/hbnb/app/services/repositories/__pycache__/user_repository.cpython-312.pyc
