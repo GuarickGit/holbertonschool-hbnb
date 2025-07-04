@@ -1,24 +1,14 @@
+from app.extensions import db
 import uuid
 from datetime import datetime
 
 
-class BaseModel:
-    """
-    Base class that provides common attributes and behavior for all models.
+class BaseModel(db.Model):
+    __abstract__ = True  # This ensures SQLAlchemy does not create a table for BaseModel
 
-    Attributes:
-        id (str): A unique identifier for the instance (UUID).
-        created_at (datetime): Timestamp when the instance was created.
-        updated_at (datetime): Timestamp when the instance was last updated.
-    """
-
-    def __init__(self):
-        """
-        Initialize a new instance with a unique ID and timestamps.
-        """
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
     def save(self):
         """
