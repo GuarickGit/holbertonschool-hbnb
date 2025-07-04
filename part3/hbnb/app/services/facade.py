@@ -1,4 +1,5 @@
 from app.persistence.repository import SQLAlchemyRepository
+from app.services.repositories.user_repository import UserRepository
 from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
@@ -15,7 +16,7 @@ class HBnBFacade:
         """
         Initializes repositories for users, places, reviews, and amenities.
         """
-        self.user_repo = SQLAlchemyRepository(User)
+        self.user_repo = UserRepository()
         self.place_repo = SQLAlchemyRepository(Place)
         self.review_repo = SQLAlchemyRepository(Review)
         self.amenity_repo = SQLAlchemyRepository(Amenity)
@@ -35,6 +36,7 @@ class HBnBFacade:
             User: The created user object.
         """
         user = User(**user_data)
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -60,7 +62,7 @@ class HBnBFacade:
         Returns:
             User or None: The user object if found, otherwise None.
         """
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
         """
