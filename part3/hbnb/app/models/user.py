@@ -1,44 +1,18 @@
 from app.models.base_model import BaseModel
 from app.validators import is_valid_email
-from app.extensions import bcrypt
+from app.extensions import db, bcrypt
+import uuid
+from .base_model import BaseModel  # Import BaseModel from its module
 
 
 class User(BaseModel):
-    """
-    Represents a user in the HBnB application.
+    __tablename__ = 'users'
 
-    Inherits from BaseModel and includes basic user attributes
-    such as first name, last name, email, and admin status.
-    """
-
-    def __init__(self, first_name, last_name, email, password, is_admin=False):
-        """
-        Initialize a new User instance with validation.
-
-        Args:
-            first_name (str): User's first name (max 50 characters).
-            last_name (str): User's last name (max 50 characters).
-            email (str): User's email address. Must be valid.
-            is_admin (bool, optional): Whether the user has admin rights. Defaults to False.
-
-        Raises:
-            ValueError: If any input is invalid.
-        """
-        super().__init__()
-
-        if not isinstance(first_name, str) or not first_name or len(first_name) > 50:
-            raise ValueError("Invalid first_name")
-        if not isinstance(last_name, str) or not last_name or len(last_name) > 50:
-            raise ValueError("Invalid last_name")
-        if not isinstance(email, str) or not email or not is_valid_email(email):
-            raise ValueError("Invalid email")
-
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.is_admin = is_admin
-        self.hash_password(password)
-
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
 
     def update(self, data):
         """
@@ -66,7 +40,6 @@ class User(BaseModel):
             self.email = data["email"]
 
         self.save()  # met à jour updated_at
-
 
     def hash_password(self, password):
         """Hashes the password before storing it."""
