@@ -1,28 +1,11 @@
 from app.models.base_model import BaseModel
+from app.extensions import db
 
 
 class Amenity(BaseModel):
-    """
-    Represents an amenity in the HBnB application.
-    Inherits from BaseModel and adds a validated 'name' attribute.
-    """
+    __tablename__ = 'amenities'
 
-    def __init__(self, name):
-        """
-        Initialize a new Amenity instance.
-
-        Args:
-            name (str): The name of the amenity. Must be a non-empty string with max length 50.
-
-        Raises:
-            ValueError: If the name is invalid.
-        """
-        super().__init__()
-
-        if not isinstance(name, str) or not name or len(name) > 50:
-            raise ValueError("Invalid amenity name")
-
-        self.name = name
+    name = db.Column(db.String(50), nullable=False)
 
     def update(self, data):
         """
