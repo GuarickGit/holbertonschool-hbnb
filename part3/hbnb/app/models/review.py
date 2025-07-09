@@ -1,36 +1,10 @@
 from app.models.base_model import BaseModel
-
+from app.extensions import db
 
 class Review(BaseModel):
-    """
-    Represents a review of a place in the HBnB application.
-
-    Inherits from BaseModel and includes review text, rating,
-    and associations to a user and a place.
-    """
-
-    def __init__(self, text, rating, user, place):
-        """
-        Initialize a new Review instance with validation.
-
-        Args:
-            text (str): The content of the review. Must be a non-empty string.
-            rating (int): An integer from 1 to 5 representing the review score.
-            user (User): The user who wrote the review.
-            place (Place): The place being reviewed.
-
-        Raises:
-            ValueError: If the text is invalid or the rating is out of range.
-        """
-        super().__init__()
-        if not text or not isinstance(text, str):
-            raise ValueError("Invalid review text")
-        if not isinstance(rating, int) or not (1 <= rating <= 5):
-            raise ValueError("Rating must be an integer between 1 and 5")
-        self.text = text
-        self.rating = rating
-        self.user = user  # instance de User
-        self.place = place  # instance de Place
+    __tablename__= 'reviews'
+    text = db.Column(db.String(100), nullable=False)
+    rating = db.Column(db.Integer(1), nullable=False)
 
     def update(self, review_data):
         """
