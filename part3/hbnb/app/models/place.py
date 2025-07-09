@@ -1,48 +1,16 @@
 from app.models.base_model import BaseModel
+from app.extensions import db
+import uuid
 
 
 class Place(BaseModel):
-    """
-    Represents a place listing in the HBnB application.
+    __tablename__ = 'places'
 
-    Inherits from BaseModel and includes details like title, price, location,
-    owner, amenities, and reviews.
-    """
-
-    def __init__(self, title, description, price, latitude, longitude, owner):
-        """
-        Initialize a new Place instance with validated attributes.
-
-        Args:
-            title (str): Title of the place (max 100 characters).
-            description (str): Optional description of the place.
-            price (float): Price of the place. Must be > 0.
-            latitude (float): Latitude (-90 to 90).
-            longitude (float): Longitude (-180 to 180).
-            owner (User): The user who owns the place.
-
-        Raises:
-            ValueError: If any of the parameters are invalid.
-        """
-        super().__init__()
-
-        if not isinstance(title, str) or not title or len(title) > 100:
-            raise ValueError("Invalid title")
-        if price <= 0:
-            raise ValueError("Price must be positive")
-        if not (-90 <= latitude <= 90):
-            raise ValueError("Latitude out of range")
-        if not (-180 <= longitude <= 180):
-            raise ValueError("Longitude out of range")
-
-        self.title = title
-        self.description = description or ""
-        self.price = float(price)
-        self.latitude = latitude
-        self.longitude = longitude
-        self.owner = owner  # instance de User
-        self.reviews = []
-        self.amenities = []
+    title = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
+    price = db.Column(db.Float(20), nullable=False)
+    latitude = db.Column(db.Float(50), nullable=False)
+    longitude = db.Column(db.Float(50), nullable=False)
 
     def add_review(self, review):
         """
