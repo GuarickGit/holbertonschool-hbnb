@@ -7,7 +7,7 @@ class Place(BaseModel):
     __tablename__ = 'places'
 
     title = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.String(1000), nullable=False)
+    description = db.Column(db.String(3000), nullable=False)
     price = db.Column(db.Float(20), nullable=False)
     latitude = db.Column(db.Float(50), nullable=False)
     longitude = db.Column(db.Float(50), nullable=False)
