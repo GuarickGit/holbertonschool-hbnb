@@ -17,6 +17,8 @@ class BaseModel(db.Model):
         Should be called whenever the object is modified.
         """
         self.updated_at = datetime.now()
+        db.session.add(self)
+        db.session.commit()
 
     def update(self, data):
         """
