@@ -1,16 +1,26 @@
 from app.models.base_model import BaseModel
 from app.extensions import db
 import uuid
+from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 
+place_amenities = db.Table('place_amenities',
+        Column('place_id', Integer, ForeignKey('places.id'), primary_key=True),
+        Column('amenity_id', Integer, ForeignKey('amenities.id'), primary_key=True)
+    )
 
 class Place(BaseModel):
     __tablename__ = 'places'
 
     title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(3000), nullable=False)
-    price = db.Column(db.Float(20), nullable=False)
-    latitude = db.Column(db.Float(50), nullable=False)
-    longitude = db.Column(db.Float(50), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    reviews = db.relationship('Review', backref='place', lazy=True)
+    amenities = db.relationship('Amenity', secondary=place_amenities, backref=db.backref('places', lazy=True))
 
     def add_review(self, review):
         """

@@ -6,6 +6,9 @@ class Review(BaseModel):
     text = db.Column(db.String(1000), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
 
+    place_id = db.Column(db.Integer, db.ForeignKey('places.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
     def update(self, review_data):
         """
         Update the review with new values from a dictionary.
