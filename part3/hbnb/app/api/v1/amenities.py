@@ -20,8 +20,17 @@ class AmenityList(Resource):
     def post(self):
         """
         Create a new amenity.
-
-        Validates the input and registers a new amenity with a name.
+        ---
+        tags:
+          - Amenities
+        description: >
+            Registers a new amenity with a name.
+            The name must be provided and valid.
+        responses:
+            201:
+                description: Amenity successfully created
+            400:
+                description: Invalid input data
         """
         amenity_data = api.payload
 
@@ -39,9 +48,14 @@ class AmenityList(Resource):
     def get(self):
         """
         Retrieve all amenities.
-
-        Returns:
-            A list of all registered amenities.
+        ---
+        tags:
+          - Amenities
+        description: >
+            Returns a list of all registered amenities.
+        responses:
+            200:
+                description: List of amenities retrieved successfully
         """
         amenities = facade.get_all_amenities()
         return [
@@ -62,9 +76,22 @@ class AmenityResource(Resource):
     def get(self, amenity_id):
         """
         Retrieve an amenity by ID.
-
-        Args:
-            amenity_id (str): The unique ID of the amenity.
+        ---
+        tags:
+          - Amenities
+        description: >
+            Fetches a specific amenity based on its ID.
+        parameters:
+            - in: path
+              name: amenity_id
+              required: true
+              description: ID of the amenity to retrieve
+              type: string
+        responses:
+            200:
+                description: Amenity details retrieved successfully
+            404:
+                description: Amenity not found
         """
         amenity = facade.get_amenity(amenity_id)
         if not amenity:
@@ -81,9 +108,25 @@ class AmenityResource(Resource):
     def put(self, amenity_id):
         """
         Update an existing amenity.
-
-        Args:
-            amenity_id (str): The ID of the amenity to update.
+        ---
+        tags:
+          - Amenities
+        description: >
+            Updates the name of an existing amenity.
+            The name must be valid.
+        parameters:
+            - in: path
+              name: amenity_id
+              required: true
+              description: ID of the amenity to update
+              type: string
+        responses:
+            200:
+                description: Amenity updated successfully
+            400:
+                description: Invalid name or missing field
+            404:
+                description: Amenity not found
         """
         amenity = facade.get_amenity(amenity_id)
         if not amenity:

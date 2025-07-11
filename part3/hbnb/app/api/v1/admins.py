@@ -49,6 +49,20 @@ class AdminUserCreate(Resource):
     @api.response(400, 'Bad request: Email already registered, missing field, or invalid format')
     @jwt_required()
     def post(self):
+        """
+        Create a new user (admin only).
+        ---
+        description: >
+            Creates a new user account. Only accessible to admins.
+            The email must not already be in use.
+        responses:
+            201:
+                description: User successfully created
+            400:
+                description: Email already registered or invalid input
+            403:
+                description: Admin privileges required
+        """
         current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
@@ -77,9 +91,26 @@ class AdminUserModify(Resource):
     @api.expect(user_update_admin_model, validate=True)
     @api.response(200, 'User successfully updated')
     @api.response(400, 'Bad request: invalid input or email already registered')
+    @api.response(403, 'Admin privileges required')
     @api.response(404, 'User not found')
     @jwt_required()
     def put(self, user_id):
+        """
+        Update a user by ID (admin only).
+        ---
+        description: >
+            Updates the details of a specific user.
+            Only accessible to admins. Ensures email uniqueness.
+        responses:
+            200:
+                description: User successfully updated
+            400:
+                description: Invalid input or duplicate email
+            403:
+                description: Admin privileges required
+            404:
+                description: User not found
+        """
         current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
@@ -120,8 +151,23 @@ class AdminAmenityCreate(Resource):
     @api.expect(amenity_admin_model, validate=True)
     @api.response(201, 'Amenity successfully created')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Admin privileges required')
     @jwt_required()
     def post(self):
+        """
+        Create a new amenity (admin only).
+        ---
+        description: >
+            Adds a new amenity to the platform.
+            Only accessible to admins.
+        responses:
+            201:
+                description: Amenity successfully created
+            400:
+                description: Invalid input data
+            403:
+                description: Admin privileges required
+        """
         current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
@@ -146,8 +192,25 @@ class AdminAmenityModify(Resource):
     @api.response(200, 'Amenity updated successfully')
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Bad request: Invalid name or missing field')
+    @api.response(403, 'Admin privileges required')
     @jwt_required()
     def put(self, amenity_id):
+        """
+        Update an amenity by ID (admin only).
+        ---
+        description: >
+            Updates the name of an existing amenity.
+            Only accessible to admins.
+        responses:
+            200:
+                description: Amenity successfully updated
+            400:
+                description: Invalid name or missing field
+            403:
+                description: Admin privileges required
+            404:
+                description: Amenity not found
+        """
         current_user = get_jwt_identity()
         if not current_user.get('is_admin'):
             return {'error': 'Admin privileges required'}, 403
@@ -178,6 +241,22 @@ class AdminPlaceModify(Resource):
     @api.response(400, 'Invalid input data')
     @jwt_required()
     def put(self, place_id):
+        """
+        Update a place by ID (admin or owner only).
+        ---
+        description: >
+            Updates place information. Admins can update any place,
+            while regular users can only update their own.
+        responses:
+            200:
+                description: Place successfully updated
+            400:
+                description: Invalid input data
+            403:
+                description: Unauthorized action
+            404:
+                description: Place not found
+        """
         current_user = get_jwt_identity()
 
         # Set is_admin default to False if not exists
@@ -210,7 +289,20 @@ class AdminReviewModify(Resource):
     @jwt_required()
     def put(self, review_id):
         """
-        Update a specific review by ID.
+        Update a review by ID (admin or author only).
+        ---
+        description: >
+            Updates the content of a review. Admins can update any review,
+            users can update only their own.
+        responses:
+            200:
+                description: Review successfully updated
+            400:
+                description: Invalid input data
+            403:
+                description: Unauthorized action
+            404:
+                description: Review not found
         """
         current_user = get_jwt_identity()
 
@@ -240,7 +332,18 @@ class AdminReviewModify(Resource):
     @jwt_required()
     def delete(self, review_id):
         """
-        Delete a review by ID.
+        Delete a review by ID (admin or author only).
+        ---
+        description: >
+            Deletes a specific review. Admins can delete any review,
+            users can delete only their own.
+        responses:
+            200:
+                description: Review successfully deleted
+            403:
+                description: Unauthorized action
+            404:
+                description: Review not found
         """
         current_user = get_jwt_identity()
 

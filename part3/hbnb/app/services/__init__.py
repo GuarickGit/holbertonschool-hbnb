@@ -1,8 +1,12 @@
 """
-Initializes the HBnBFacade service layer for managing application data.
+Initialize the HBnBFacade service layer.
+
+This module creates a singleton instance of the HBnBFacade,
+which provides unified access to the application's core services,
+including users, places, reviews, and amenities.
 """
 
 from app.services.facade import HBnBFacade
 
-# Instantiate the application facade to manage users, places, amenities, and reviews.
+# Singleton instance of the application service facade
 facade = HBnBFacade()

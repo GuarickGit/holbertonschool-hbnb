@@ -65,9 +65,17 @@ class PlaceList(Resource):
     def post(self):
         """
         Create a new place.
-
-        Validates the input payload and registers a place that links
-        to an existing owner and a list of amenities.
+        ---
+        tags:
+          - Places
+        description: >
+            Creates a new place associated with the current user as owner.
+            Requires authentication. Amenities are linked by ID.
+        responses:
+            201:
+                description: Place successfully created
+            400:
+                description: Invalid input data
         """
 
         current_user = get_jwt_identity()
@@ -93,9 +101,14 @@ class PlaceList(Resource):
     def get(self):
         """
         Retrieve all places.
-
-        Returns:
-            A list of places with minimal details (owner ID only).
+        ---
+        tags:
+          - Places
+        description: >
+            Retrieves a list of all places with owner ID only.
+        responses:
+            200:
+                description: List of places retrieved successfully
         """
         places = facade.get_all_places()
         return [
@@ -121,9 +134,23 @@ class PlaceResource(Resource):
     def get(self, place_id):
         """
         Retrieve a place by ID.
-
-        Returns:
-            Full details, including nested owner, amenities and reviews.
+        ---
+        tags:
+          - Places
+        description: >
+            Returns detailed information about a place, including:
+            owner info, amenities, and reviews.
+        parameters:
+          - in: path
+            name: place_id
+            required: true
+            type: string
+            description: The ID of the place
+        responses:
+            200:
+                description: Place details retrieved successfully
+            404:
+                description: Place not found
         """
         place = facade.get_place(place_id)
         if not place:
@@ -157,17 +184,33 @@ class PlaceResource(Resource):
     @api.response(200, 'Place updated successfully')
     @api.response(404, 'Place not found')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
     @jwt_required()
     def put(self, place_id):
         """
         Update an existing place.
-
-        Args:
-            place_id (str): ID of the place to update.
-
-        Notes:
-            - `owner_id` is immutable once the place is created.
-            - Amenities list is fully replaced if provided.
+        ---
+        tags:
+          - Places
+        description: >
+            Updates an existing place. Only the owner of the place
+            can perform the update. Amenities list is fully replaced
+            if provided. Owner ID cannot be changed.
+        parameters:
+          - in: path
+            name: place_id
+            required: true
+            type: string
+            description: The ID of the place
+        responses:
+            200:
+                description: Place updated successfully
+            400:
+                description: Invalid input data
+            403:
+                description: Unauthorized action
+            404:
+                description: Place not found
         """
         current_user = get_jwt_identity()
         place = facade.get_place(place_id)

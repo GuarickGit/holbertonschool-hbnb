@@ -6,6 +6,22 @@ from .base_model import BaseModel  # Import BaseModel from its module
 
 
 class User(BaseModel):
+    """
+    Represents a user of the application.
+
+    Inherits:
+        BaseModel: Provides ID, timestamps, and utility methods.
+
+    Attributes:
+        first_name (str): First name (required, max 50 characters).
+        last_name (str): Last name (required, max 50 characters).
+        email (str): Unique email address (required, max 120 characters).
+        password (str): Hashed password (stored securely).
+        is_admin (bool): Indicates if the user has admin privileges.
+        places (List[Place]): Places owned by the user.
+        reviews (List[Review]): Reviews authored by the user.
+    """
+
     __tablename__ = 'users'
 
     first_name = db.Column(db.String(50), nullable=False)
@@ -19,13 +35,13 @@ class User(BaseModel):
 
     def update(self, data):
         """
-        Update the user's attributes using a dictionary of new values.
+        Update the user's information.
 
         Args:
-            data (dict): Dictionary with optional 'first_name', 'last_name', or 'email' keys.
+            data (dict): May include "first_name", "last_name", or "email".
 
         Raises:
-            ValueError: If any provided field is invalid.
+            ValueError: If any field is invalid (wrong type, format, or length).
         """
         if "first_name" in data:
             if not isinstance(data["first_name"], str) or not data["first_name"] or len(data["first_name"]) > 50:
@@ -45,9 +61,22 @@ class User(BaseModel):
         self.save()  # met à jour updated_at
 
     def hash_password(self, password):
-        """Hashes the password before storing it."""
+        """
+        Hash and store the given password securely.
+
+        Args:
+            password (str): Plain-text password to hash.
+        """
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def verify_password(self, password):
-        """Verifies if the provided password matches the hashed password."""
+        """
+        Check if the provided password matches the stored hash.
+
+        Args:
+            password (str): Plain-text password to verify.
+
+        Returns:
+            bool: True if password is correct, False otherwise.
+        """
         return bcrypt.check_password_hash(self.password, password)

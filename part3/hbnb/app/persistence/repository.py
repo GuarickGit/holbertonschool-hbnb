@@ -1,19 +1,16 @@
 from abc import ABC, abstractmethod
 from app.extensions import db
-from app.models.user import User
-from app.models.place import Place
-from app.models.review import Review
-from app.models.amenity import Amenity
-
 
 class Repository(ABC):
     """
-    Abstract base class defining the interface for a repository.
+    Abstract base class defining the contract for a repository.
+
+    This interface supports basic CRUD operations and attribute-based retrieval.
     """
     @abstractmethod
     def add(self, obj):
         """
-        Add an object to the repository.
+        Persist a new object.
 
         Args:
             obj: The object to be added.
@@ -23,10 +20,10 @@ class Repository(ABC):
     @abstractmethod
     def get(self, obj_id):
         """
-        Retrieve an object by its ID.
+        Retrieve an object by its unique ID.
 
         Args:
-            obj_id: The unique identifier of the object.
+            obj_id: Identifier of the object.
 
         Returns:
             The object if found, else None.
@@ -36,45 +33,45 @@ class Repository(ABC):
     @abstractmethod
     def get_all(self):
         """
-        Retrieve all stored objects.
+        Retrieve all objects.
 
         Returns:
-            A list of all stored objects.
+            List of stored objects.
         """
         pass
 
     @abstractmethod
     def update(self, obj_id, data):
         """
-        Update an existing object by ID with provided data.
+        Update an object with the given data.
 
         Args:
-            obj_id: The unique identifier of the object.
-            data (dict): Data to update on the object.
+            obj_id: ID of the object to update.
+            data (dict): Dictionary of fields to update.
         """
         pass
 
     @abstractmethod
     def delete(self, obj_id):
         """
-        Remove an object from the repository by ID.
+        Delete an object by its ID.
 
         Args:
-            obj_id: The unique identifier of the object to delete.
+            obj_id: ID of the object to remove.
         """
         pass
 
     @abstractmethod
     def get_by_attribute(self, attr_name, attr_value):
         """
-        Retrieve an object by a specific attribute and its value.
+        Retrieve an object matching a specific attribute value.
 
         Args:
-            attr_name (str): The name of the attribute.
-            attr_value: The value to match.
+            attr_name (str): The attribute name to search by.
+            attr_value: The expected value of the attribute.
 
         Returns:
-            The matching object if found, else None.
+            The matching object or None.
         """
         pass
 
@@ -82,51 +79,38 @@ class Repository(ABC):
 class InMemoryRepository(Repository):
     """
     In-memory implementation of the Repository interface using a dictionary.
+
+    Intended for testing or non-persistent environments.
     """
 
     def __init__(self):
-        """
-        Initialize the repository with an empty internal storage.
-        """
+        """Initialize with an empty internal dictionary."""
         self._storage = {}
 
     def add(self, obj):
         """
-        Add an object to the in-memory storage.
+        Add an object.
 
         Args:
-            obj: The object to be added. Must have a unique 'id' attribute.
+            obj: The object (must have a unique 'id' attribute).
         """
         self._storage[obj.id] = obj
 
     def get(self, obj_id):
-        """
-        Retrieve an object by its ID.
-
-        Args:
-            obj_id: The unique identifier of the object.
-
-        Returns:
-            The object if found, else None.
-        """
+        """Return the object by ID, or None if not found."""
         return self._storage.get(obj_id)
 
     def get_all(self):
-        """
-        Retrieve all stored objects.
-
-        Returns:
-            List of all stored objects.
-        """
+        """Return all stored objects."""
         return list(self._storage.values())
 
     def update(self, obj_id, data):
         """
-        Update an existing object with new data.
+        Update the object with the given data if it exists.
 
         Args:
-            obj_id: The unique identifier of the object.
-            data (dict): Data to update on the object.
+            obj_id: Identifier of the object.
+            data (dict): Data to update.
         """
         obj = self.get(obj_id)
         if obj:
@@ -134,43 +118,65 @@ class InMemoryRepository(Repository):
 
     def delete(self, obj_id):
         """
-        Delete an object by ID.
+        Remove the object if it exists.
 
         Args:
-            obj_id: The unique identifier of the object to delete.
+            obj_id: Identifier of the object to delete.
         """
         if obj_id in self._storage:
             del self._storage[obj_id]
 
     def get_by_attribute(self, attr_name, attr_value):
         """
-        Retrieve an object by matching an attribute value.
+        Return the first object where `attr_name == attr_value`.
 
         Args:
-            attr_name (str): The attribute name to search.
-            attr_value: The value of the attribute to match.
+            attr_name (str): Attribute to compare.
+            attr_value: Expected value.
 
         Returns:
-            The first matching object, or None if not found.
+            Matching object or None.
         """
         return next((obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value), None)
 
 
 class SQLAlchemyRepository(Repository):
+    """
+    SQLAlchemy-backed implementation of the Repository interface.
+
+    Provides persistent storage using the configured database session.
+    """
+
     def __init__(self, model):
+        """
+        Initialize with a SQLAlchemy model.
+
+        Args:
+            model: The SQLAlchemy model class to manage.
+        """
         self.model = model
 
     def add(self, obj):
+        """Add and persist the object."""
         db.session.add(obj)
         db.session.commit()
 
     def get(self, obj_id):
+        """Fetch the object by primary key."""
         return self.model.query.get(obj_id)
 
     def get_all(self):
+        """Return all rows from the table."""
         return self.model.query.all()
 
     def update(self, obj_id, data):
+        """
+        Update the fields of an existing object.
+
+        Args:
+            obj_id: The object's ID.
+            data (dict): Fields and values to apply.
+        """
         obj = self.get(obj_id)
         if obj:
             for key, value in data.items():
@@ -178,11 +184,27 @@ class SQLAlchemyRepository(Repository):
             db.session.commit()
 
     def delete(self, obj_id):
+        """
+        Delete the object from the database.
+
+        Args:
+            obj_id: The object's ID.
+        """
         obj = self.get(obj_id)
         if obj:
             db.session.delete(obj)
             db.session.commit()
 
     def get_by_attribute(self, attr_name, attr_value):
+        """
+        Fetch an object by attribute value.
+
+        Args:
+            attr_name (str): Column name.
+            attr_value: Value to match.
+
+        Returns:
+            The first matching row, or None.
+        """
         return self.model.query.filter(getattr(self.model, attr_name) == attr_value).first()
 

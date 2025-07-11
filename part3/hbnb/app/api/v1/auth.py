@@ -14,8 +14,26 @@ login_model = api.model('Login', {
 @api.route('/login')
 class Login(Resource):
     @api.expect(login_model)
+    @api.response(200, 'JWT token successfully generated')
+    @api.response(401, 'Invalid email or password')
     def post(self):
-        """Authenticate user and return a JWT token"""
+        """
+        Authenticate user and return a JWT token.
+        ---
+        tags:
+          - Auth
+        description: >
+            Verifies user credentials and returns a signed JWT token if valid.
+            The token contains the user ID and admin status.
+        requestBody:
+            description: User credentials
+            required: true
+        responses:
+            200:
+                description: JWT token successfully generated
+            401:
+                description: Invalid email or password
+        """
         credentials = api.payload  # Get the email and password from the request payload
 
         # Step 1: Retrieve the user based on the provided email
@@ -35,6 +53,19 @@ class Login(Resource):
 class ProtectedResource(Resource):
     @jwt_required()
     def get(self):
-        """A protected endpoint that requires a valid JWT token"""
+        """
+        Access a protected resource.
+        ---
+        tags:
+          - Auth
+        description: >
+            A test endpoint that requires a valid JWT token to access.
+            Returns the current user's ID from the token.
+        responses:
+            200:
+                description: Access granted to protected resource
+            401:
+                description: Unauthorized access (token missing or invalid)
+        """
         current_user = get_jwt_identity()  # Retrieve the user's identity from the token
         return {'message': f'Hello, user {current_user["id"]}'}, 200

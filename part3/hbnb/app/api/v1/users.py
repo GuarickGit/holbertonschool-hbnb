@@ -25,8 +25,16 @@ class UserList(Resource):
     def post(self):
         """
         Create a new user.
-
-        Validates the request payload and registers a new user if the email is not already used.
+        ---
+        tags:
+          - Users
+        description: >
+            Registers a new user if the email is not already used.
+        responses:
+            201:
+                description: User successfully created
+            400:
+                description: Email already exists or invalid data
         """
         user_data = api.payload
 
@@ -49,9 +57,14 @@ class UserList(Resource):
     def get(self):
         """
         Retrieve all users.
-
-        Returns:
-            A list of all registered users with basic details.
+        ---
+        tags:
+          - Users
+        description: >
+            Returns a list of all registered users with their basic details.
+        responses:
+            200:
+                description: List of users retrieved successfully
         """
         users = facade.get_all_users()
         return [
@@ -71,12 +84,20 @@ class UserResource(Resource):
     def get(self, user_id):
         """
         Retrieve a user's details by ID.
-
-        Args:
-            user_id (str): The unique ID of the user.
-
-        Returns:
-            The user information if found.
+        ---
+        tags:
+          - Users
+        parameters:
+          - in: path
+            name: user_id
+            required: true
+            type: string
+            description: The ID of the user
+        responses:
+            200:
+                description: User details retrieved successfully
+            404:
+                description: User not found
         """
         user = facade.get_user(user_id)
         if not user:
@@ -91,14 +112,33 @@ class UserResource(Resource):
     @api.expect(user_update_model, validate=True)
     @api.response(200, 'User successfully updated')
     @api.response(400, 'Bad request: invalid input or email already registered')
+    @api.response(403, 'Unauthorized action')
     @api.response(404, 'User not found')
     @jwt_required()
     def put(self, user_id):
         """
         Update an existing user's information.
-
-        Args:
-            user_id (str): The unique ID of the user to update.
+        ---
+        tags:
+          - Users
+        description: >
+            Only the authenticated user can update their first and last name.
+            Email and password updates are not allowed here.
+        parameters:
+          - in: path
+            name: user_id
+            required: true
+            type: string
+            description: The ID of the user to update
+        responses:
+            200:
+                description: User successfully updated
+            400:
+                description: Invalid input or forbidden field
+            403:
+                description: Unauthorized action
+            404:
+                description: User not found
         """
         current_user = get_jwt_identity()
         user_data = api.payload

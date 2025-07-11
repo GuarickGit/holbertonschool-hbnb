@@ -30,8 +30,19 @@ class ReviewList(Resource):
     def post(self):
         """
         Create a new review.
-
-        Validates the input and registers a new review linked to a user and a place.
+        ---
+        tags:
+          - Reviews
+        description: >
+            Registers a new review from the authenticated user for a place.
+            A user cannot review their own place or review the same place multiple times.
+        responses:
+            201:
+                description: Review successfully created
+            400:
+                description: Invalid input data or business rule violation
+            404:
+                description: Place not found
         """
         current_user = get_jwt_identity()
         review_data = api.payload
@@ -74,9 +85,14 @@ class ReviewList(Resource):
     def get(self):
         """
         Retrieve all reviews.
-
-        Returns:
-            A list of all reviews with their associated user and place IDs.
+        ---
+        tags:
+          - Reviews
+        description: >
+            Returns a list of all reviews, with user and place IDs.
+        responses:
+            200:
+                description: List of reviews retrieved successfully
         """
         reviews = facade.get_all_reviews()
         return [
@@ -97,6 +113,20 @@ class ReviewResource(Resource):
     def get(self, review_id):
         """
         Retrieve a specific review by ID.
+        ---
+        tags:
+          - Reviews
+        parameters:
+          - in: path
+            name: review_id
+            required: true
+            type: string
+            description: The ID of the review to retrieve
+        responses:
+            200:
+                description: Review details retrieved successfully
+            404:
+                description: Review not found
         """
         review = facade.get_review(review_id)
         if not review:
@@ -113,12 +143,31 @@ class ReviewResource(Resource):
     @api.response(200, 'Review updated successfully')
     @api.response(404, 'Review not found')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
     @jwt_required()
     def put(self, review_id):
         """
         Update an existing review.
-
-        Only the `text` and `rating` fields can be updated.
+        ---
+        tags:
+          - Reviews
+        description: >
+            Allows the review author to update the text and rating.
+        parameters:
+          - in: path
+            name: review_id
+            required: true
+            type: string
+            description: The ID of the review to update
+        responses:
+            200:
+                description: Review updated successfully
+            400:
+                description: Invalid input data
+            403:
+                description: Unauthorized action
+            404:
+                description: Review not found
         """
         current_user = get_jwt_identity()
         review_data = api.payload
@@ -141,10 +190,29 @@ class ReviewResource(Resource):
 
     @api.response(200, 'Review deleted successfully')
     @api.response(404, 'Review not found')
+    @api.response(403, 'Unauthorized action')
     @jwt_required()
     def delete(self, review_id):
         """
         Delete a review by ID.
+        ---
+        tags:
+          - Reviews
+        description: >
+            Allows the review's author to delete it.
+        parameters:
+          - in: path
+            name: review_id
+            required: true
+            type: string
+            description: The ID of the review to delete
+        responses:
+            200:
+                description: Review deleted successfully
+            403:
+                description: Unauthorized action
+            404:
+                description: Review not found
         """
         current_user = get_jwt_identity()
         review = facade.get_review(review_id)
@@ -167,10 +235,21 @@ class PlaceReviewList(Resource):
     @api.response(404, 'Place not found')
     def get(self, place_id):
         """
-        Retrieve all reviews associated with a specific place.
-
-        Args:
-            place_id (str): ID of the place whose reviews are requested.
+        Retrieve all reviews for a specific place.
+        ---
+        tags:
+          - Reviews
+        parameters:
+          - in: path
+            name: place_id
+            required: true
+            type: string
+            description: The ID of the place
+        responses:
+            200:
+                description: List of reviews for the place retrieved successfully
+            404:
+                description: Place not found
         """
         place = facade.get_place(place_id)
         if not place:

@@ -1,6 +1,4 @@
 CREATE TABLE IF NOT EXISTS amenities (
-	id CHAR(36),
-	name VARCHAR(255),
-	PRIMARY KEY (id),
-	UNIQUE (name)
-)
+    id CHAR(36) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE
+);

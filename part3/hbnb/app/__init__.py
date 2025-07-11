@@ -1,3 +1,18 @@
+"""
+Initialize and configure the HBnB Flask application.
+
+This module creates the Flask app instance, sets up extensions (SQLAlchemy, Bcrypt, JWT),
+and registers all API namespaces under the `/api/v1` prefix.
+
+Modules registered:
+- Users
+- Amenities
+- Places
+- Reviews
+- Auth
+- Admins
+"""
+
 from flask import Flask
 from flask_restx import Api
 from app.api.v1.users import api as users_ns
@@ -15,12 +30,20 @@ jwt = JWTManager()
 
 def create_app(config_class="config.DevelopmentConfig"):
     """
-    Creates and configures the Flask application instance with Flask-RESTX.
+    Create and configure the Flask application instance.
 
-    Registers all API namespaces under the `/api/v1` path.
+    Sets up:
+    - Flask-RESTX for API management
+    - SQLAlchemy for ORM
+    - Bcrypt for password hashing
+    - JWTManager for authentication
+    - All registered API namespaces under /api/v1
+
+    Args:
+        config_class (str): Python path to the configuration class to load.
 
     Returns:
-        Flask: The configured Flask application instance.
+        Flask: The configured Flask application.
     """
     app = Flask(__name__)
     app.config.from_object(import_string(config_class))
@@ -34,7 +57,7 @@ def create_app(config_class="config.DevelopmentConfig"):
         'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"'
     }
 }
-
+     # Initialize RESTX API with metadata
     api = Api(app,
             version='1.0',
             title='HBnB API',

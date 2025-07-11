@@ -8,13 +8,19 @@ from app.models.review import Review
 
 class HBnBFacade:
     """
-    Facade class that provides a simplified interface to interact with
-    users, amenities, places, and reviews using in-memory repositories.
+    Facade service layer that centralizes business logic and coordinates
+    interactions between repositories and models.
+
+    Provides a simplified and consistent interface for:
+        - User management
+        - Place creation and updating
+        - Amenity management
+        - Review handling
     """
 
     def __init__(self):
         """
-        Initializes repositories for users, places, reviews, and amenities.
+        Initialize repositories for each model.
         """
         self.user_repo = UserRepository()
         self.place_repo = SQLAlchemyRepository(Place)
@@ -27,13 +33,13 @@ class HBnBFacade:
 
     def create_user(self, user_data):
         """
-        Creates a new user and stores it in the repository.
+        Create and persist a new user after hashing the password.
 
         Args:
-            user_data (dict): Dictionary containing user attributes.
+            user_data (dict): New user data.
 
         Returns:
-            User: The created user object.
+            User: The created user instance.
         """
         user = User(**user_data)
         user.hash_password(user_data['password'])
@@ -41,48 +47,27 @@ class HBnBFacade:
         return user
 
     def get_user(self, user_id):
-        """
-        Retrieves a user by ID.
-
-        Args:
-            user_id (str): ID of the user.
-
-        Returns:
-            User or None: The user object if found, otherwise None.
-        """
+        """Retrieve a user by ID."""
         return self.user_repo.get(user_id)
 
     def get_user_by_email(self, email):
-        """
-        Retrieves a user by email address.
-
-        Args:
-            email (str): The user's email.
-
-        Returns:
-            User or None: The user object if found, otherwise None.
-        """
+        """Retrieve a user by their email."""
         return self.user_repo.get_user_by_email(email)
 
     def get_all_users(self):
-        """
-        Retrieves all users.
-
-        Returns:
-            list[User]: A list of all user objects.
-        """
+        """Return all registered users."""
         return self.user_repo.get_all()
 
     def update_user(self, user_id, user_data):
         """
-        Updates user data by ID.
+        Update user attributes.
 
         Args:
-            user_id (str): ID of the user.
-            user_data (dict): Data to update.
+            user_id (str): Target user ID.
+            user_data (dict): Fields to update.
 
         Returns:
-            User or None: The updated user object, or None if not found.
+            User or None: Updated user or None if not found.
         """
         user = self.get_user(user_id)
         if not user:
@@ -95,51 +80,21 @@ class HBnBFacade:
     # -------------------------------
 
     def create_amenity(self, amenity_data):
-        """
-        Creates a new amenity.
-
-        Args:
-            amenity_data (dict): Data for the new amenity.
-
-        Returns:
-            Amenity: The created amenity object.
-        """
+        """Create and save a new amenity."""
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
         return amenity
 
     def get_amenity(self, amenity_id):
-        """
-        Retrieves an amenity by ID.
-
-        Args:
-            amenity_id (str): ID of the amenity.
-
-        Returns:
-            Amenity or None
-        """
+        """Retrieve an amenity by ID."""
         return self.amenity_repo.get(amenity_id)
 
     def get_all_amenities(self):
-        """
-        Retrieves all amenities.
-
-        Returns:
-            list[Amenity]: List of all amenity objects.
-        """
+        """Return all amenities."""
         return self.amenity_repo.get_all()
 
     def update_amenity(self, amenity_id, amenity_data):
-        """
-        Updates an amenity by ID.
-
-        Args:
-            amenity_id (str): ID of the amenity.
-            amenity_data (dict): Data to update.
-
-        Returns:
-            Amenity or None: Updated amenity object or None if not found.
-        """
+        """Update an amenity's data by ID."""
         amenity = self.get_amenity(amenity_id)
         if not amenity:
             return None
@@ -152,16 +107,10 @@ class HBnBFacade:
 
     def create_place(self, place_data):
         """
-        Creates a new place with linked owner and amenities.
-
-        Args:
-            place_data (dict): Data for the new place.
-
-        Returns:
-            Place: The created place object.
+        Create a new place associated with an owner and optional amenities.
 
         Raises:
-            ValueError: If owner or any amenity is not found.
+            ValueError: If owner or an amenity is not found.
         """
         # 1. Extraire les IDs
         owner_id = place_data.get("owner_id")
@@ -198,36 +147,16 @@ class HBnBFacade:
         return place
 
     def get_place(self, place_id):
-        """
-        Retrieves a place by ID.
-
-        Args:
-            place_id (str): ID of the place.
-
-        Returns:
-            Place or None
-        """
+        """Retrieve a place by ID."""
         return self.place_repo.get(place_id)
 
     def get_all_places(self):
-        """
-        Retrieves all places.
-
-        Returns:
-            list[Place]: List of all place objects.
-        """
+        """Return all places."""
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
         """
-        Updates an existing place.
-
-        Args:
-            place_id (str): ID of the place to update.
-            place_data (dict): Fields to update.
-
-        Returns:
-            Place or None: Updated place or None if not found.
+        Update place attributes and amenities.
 
         Raises:
             ValueError: If any new amenity is not found.
@@ -262,16 +191,10 @@ class HBnBFacade:
 
     def create_review(self, review_data):
         """
-        Creates a new review associated with a user and a place.
-
-        Args:
-            review_data (dict): Data for the review.
-
-        Returns:
-            Review: The created review object.
+        Create a review for a given place and user.
 
         Raises:
-            ValueError: If user/place is not found or data is invalid.
+            ValueError: If user/place not found or data invalid.
         """
         # 1. Extraire les IDs
         user_id = review_data.get("user_id")
@@ -310,48 +233,22 @@ class HBnBFacade:
         return review
 
     def get_review(self, review_id):
-        """
-        Retrieves a review by ID.
-
-        Args:
-            review_id (str): ID of the review.
-
-        Returns:
-            Review or None
-        """
+        """Retrieve a review by ID."""
         return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
-        """
-        Retrieves all reviews.
-
-        Returns:
-            list[Review]: All review objects.
-        """
+        """Return all reviews."""
         return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        """
-        Retrieves all reviews for a specific place.
-
-        Args:
-            place_id (str): ID of the place.
-
-        Returns:
-            list[Review]: Reviews linked to the specified place.
-        """
+        """Return all reviews for a given place ID."""
         return [review for review in self.review_repo.get_all() if review.place.id == place_id]
 
     def update_review(self, review_id, review_data):
         """
-        Updates a review's content and rating.
+        Update a review's content and rating.
 
-        Args:
-            review_id (str): ID of the review.
-            review_data (dict): Fields to update.
-
-        Returns:
-            Review or None
+        Ignores changes to user_id and place_id.
         """
         review = self.get_review(review_id)
         if not review:
@@ -367,13 +264,10 @@ class HBnBFacade:
 
     def delete_review(self, review_id):
         """
-        Deletes a review and removes it from the associated place.
-
-        Args:
-            review_id (str): ID of the review.
+        Delete a review and remove it from its associated place.
 
         Returns:
-            bool: True if deletion was successful, False otherwise.
+            bool: True if successful, False if review not found.
         """
         review = self.get_review(review_id)
         if not review:

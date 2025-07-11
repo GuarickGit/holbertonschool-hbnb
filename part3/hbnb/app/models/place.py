@@ -4,12 +4,30 @@ import uuid
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
+# Association table for many-to-many relationship between Place and Amenity
 place_amenities = db.Table('place_amenities',
         Column('place_id', Integer, ForeignKey('places.id'), primary_key=True),
         Column('amenity_id', Integer, ForeignKey('amenities.id'), primary_key=True)
     )
 
 class Place(BaseModel):
+    """
+    Represents a place available for booking.
+
+    Inherits:
+        BaseModel: Includes ID, timestamps, and persistence methods.
+
+    Attributes:
+        title (str): Title of the place (max 100 chars).
+        description (str): Description of the place (optional, max 3000 chars).
+        price (float): Price per night (must be > 0).
+        latitude (float): Geographical latitude (-90 to 90).
+        longitude (float): Geographical longitude (-180 to 180).
+        user_id (int): Foreign key to the owner (User).
+        reviews (List[Review]): Linked reviews.
+        amenities (List[Amenity]): Linked amenities through many-to-many.
+    """
+
     __tablename__ = 'places'
 
     title = db.Column(db.String(50), nullable=False)
@@ -24,33 +42,32 @@ class Place(BaseModel):
 
     def add_review(self, review):
         """
-        Add a review to the place.
+        Link a Review to this Place.
 
         Args:
-            review (Review): The review to add.
+            review (Review): Review instance to associate.
         """
         self.reviews.append(review)
 
     def add_amenity(self, amenity):
         """
-        Add an amenity to the place.
+        Link an Amenity to this Place.
 
         Args:
-            amenity (Amenity): The amenity to add.
+            amenity (Amenity): Amenity instance to associate.
         """
         self.amenities.append(amenity)
 
     def update(self, place_data):
         """
-        Update the place's attributes using a dictionary of new values.
+        Update the Place using provided values.
 
         Args:
             place_data (dict): Dictionary of attributes to update.
 
         Raises:
-            ValueError: If any provided field is invalid.
+            ValueError: If any provided field is invalid or outside acceptable bounds.
         """
-
         if "title" in place_data:
             if not isinstance(place_data["title"], str) or not place_data["title"] or len(place_data["title"]) > 100:
                 raise ValueError("Invalid title")
