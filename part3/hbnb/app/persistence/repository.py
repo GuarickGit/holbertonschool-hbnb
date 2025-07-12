@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from app.extensions import db
-from sqlalchemy.orm import joinedload
 
 class Repository(ABC):
     """
