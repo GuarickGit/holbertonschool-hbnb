@@ -6,8 +6,8 @@ from sqlalchemy.orm import relationship
 
 # Association table for many-to-many relationship between Place and Amenity
 place_amenities = db.Table('place_amenities',
-        Column('place_id', Integer, ForeignKey('places.id'), primary_key=True),
-        Column('amenity_id', Integer, ForeignKey('amenities.id'), primary_key=True)
+        db.Column('place_id', db.String(36), db.ForeignKey('places.id'), primary_key=True),
+        db.Column('amenity_id', db.String(36), db.ForeignKey('amenities.id'), primary_key=True)
     )
 
 class Place(BaseModel):
@@ -36,9 +36,11 @@ class Place(BaseModel):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
     reviews = db.relationship('Review', backref='place', lazy=True)
     amenities = db.relationship('Amenity', secondary=place_amenities, backref=db.backref('places', lazy=True))
+    reviews = db.relationship('Review', back_populates='place', lazy=True)
+
 
     def add_review(self, review):
         """
