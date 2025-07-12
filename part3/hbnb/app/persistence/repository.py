@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from app.extensions import db
+from sqlalchemy.orm import joinedload
 
 class Repository(ABC):
     """
@@ -164,6 +165,13 @@ class SQLAlchemyRepository(Repository):
     def get(self, obj_id):
         """Fetch the object by primary key."""
         return self.model.query.get(obj_id)
+
+    def get_with_options(self, obj_id, options=None):
+        query = self.model.query
+        if options:
+            for option in options:
+                query = query.options(option)
+        return query.filter(self.model.id == obj_id).first()
 
     def get_all(self):
         """Return all rows from the table."""
