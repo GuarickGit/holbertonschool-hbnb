@@ -2,6 +2,7 @@ from flask_restx import Namespace, Resource, fields
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app.services import facade
 from flask import request
+from app.validators import is_valid_email
 
 api = Namespace('admin', description='Admin operations')
 
@@ -74,6 +75,9 @@ class AdminUserCreate(Resource):
         if facade.get_user_by_email(email):
             return {'error': 'Email already registered'}, 400
 
+        if not is_valid_email(email):
+            return {'error': 'Invalid email'}, 400
+
         # Logic to create a new user
         try:
             new_user = facade.create_user(user_data)
@@ -127,6 +131,10 @@ class AdminUserModify(Resource):
             existing_user = facade.get_user_by_email(email)
             if existing_user and existing_user.id != user_id:
                 return {'error': 'Email already in use'}, 400
+
+        email = data.get('email')
+        if email and not is_valid_email(email):
+            return {'error': 'Invalid email'}, 400
 
         # Logic to update user details
         try:
