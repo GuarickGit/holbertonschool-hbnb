@@ -38,6 +38,11 @@ class UserList(Resource):
         """
         user_data = api.payload
 
+        required_fields = ['first_name', 'last_name', 'email', 'password']
+        for field in required_fields:
+            if field not in user_data or not user_data[field]:
+                return {'error': f'{field} is required'}, 400
+
         # Simulate email uniqueness check (to be replaced by real validation with persistence)
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
