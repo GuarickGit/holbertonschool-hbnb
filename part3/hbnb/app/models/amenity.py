@@ -15,7 +15,7 @@ class Amenity(BaseModel):
 
     __tablename__ = 'amenities'
 
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable=False, unique=True)
 
     def update(self, data):
         """
