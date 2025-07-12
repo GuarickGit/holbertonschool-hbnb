@@ -1,5 +1,6 @@
 import os
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     """
@@ -15,7 +16,7 @@ class DevelopmentConfig(Config):
     Inherits from Config and enables debug mode.
     """
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///development.db'
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(basedir, 'development.db')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
