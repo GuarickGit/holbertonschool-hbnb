@@ -4,6 +4,8 @@ from app.models.user import User
 from app.models.amenity import Amenity
 from app.models.place import Place
 from app.models.review import Review
+from sqlalchemy.orm import joinedload
+from app.validators import is_valid_email
 
 
 class HBnBFacade:
@@ -41,6 +43,14 @@ class HBnBFacade:
         Returns:
             User: The created user instance.
         """
+        required_fields = ['first_name', 'last_name', 'email', 'password']
+        for field in required_fields:
+            if field not in user_data or not user_data[field]:
+                raise ValueError(f"{field} is required")
+
+        if not is_valid_email(user_data['email']):
+            raise ValueError("Invalid email format")
+    
         user = User(**user_data)
         user.hash_password(user_data['password'])
         self.user_repo.add(user)
@@ -81,6 +91,10 @@ class HBnBFacade:
 
     def create_amenity(self, amenity_data):
         """Create and save a new amenity."""
+        existing = self.amenity_repo.get_by_attribute('name', amenity_data.get('name'))
+        if existing:
+            raise ValueError("Amenity with this name already exists")
+
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
         return amenity
@@ -221,7 +235,8 @@ class HBnBFacade:
             raise ValueError("Invalid review text")
 
         # 6. Créer le Review
-        review = Review(text=text, rating=rating, user=user, place=place)
+        review = Review(text=text, rating=rating, user_id=user.id, place_id=place.id)
+
 
         # 7. Ajouter à la place
         place.reviews.append(review)
@@ -234,7 +249,7 @@ class HBnBFacade:
 
     def get_review(self, review_id):
         """Retrieve a review by ID."""
-        return self.review_repo.get(review_id)
+        return self.review_repo.get_with_options(review_id, options=[joinedload(Review.place)])
 
     def get_all_reviews(self):
         """Return all reviews."""
