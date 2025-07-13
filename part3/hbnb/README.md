@@ -292,10 +292,7 @@ curl -X POST http://localhost:5000/api/v1/admins/ \
 ```json
 {
   "id": "user-uuid",
-  "first_name": "Samira",
-  "last_name": "Roche",
-  "email": "samira@gmail.com",
-  "is_admin": false
+  "message": "User successfully created",
 }
 ```
 ---
@@ -322,9 +319,7 @@ http://localhost:5000/
 ```json
 {
   "id": "8f1c6a97-b6c0-47c0-8bc3-507e5e2e55e3",
-  "first_name": "Axel",
-  "last_name": "Goré",
-  "email": "axel.goré@gmail.com",
+  "message": "User successfully created",
 }
 ```
 
