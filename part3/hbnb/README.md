@@ -79,7 +79,7 @@ hbnb/
 
 ```
 ---
-### 📊 Database Diagram
+### 📊 Entity-Relationship (ER) Diagram
 ```mermaid
 erDiagram
     USER {
@@ -127,7 +127,7 @@ erDiagram
 ```
 
 ---
-### 📊 Database Diagram with reservation
+### 📊 Entity-Relationship (ER) Diagram with reservation
 ```mermaid
 erDiagram
     USER {
