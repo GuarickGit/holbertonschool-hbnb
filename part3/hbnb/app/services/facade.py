@@ -50,7 +50,7 @@ class HBnBFacade:
 
         if not is_valid_email(user_data['email']):
             raise ValueError("Invalid email format")
-    
+
         user = User(**user_data)
         user.hash_password(user_data['password'])
         self.user_repo.add(user)
@@ -91,6 +91,10 @@ class HBnBFacade:
 
     def create_amenity(self, amenity_data):
         """Create and save a new amenity."""
+
+        if 'name' not in amenity_data or not amenity_data['name']:
+            raise ValueError("Amenity name is required")
+
         existing = self.amenity_repo.get_by_attribute('name', amenity_data.get('name'))
         if existing:
             raise ValueError("Amenity with this name already exists")
@@ -126,6 +130,24 @@ class HBnBFacade:
         Raises:
             ValueError: If owner or an amenity is not found.
         """
+        # Vérification des champs obligatoires
+        required_fields = ['title', 'description', 'price', 'latitude', 'longitude']
+        for field in required_fields:
+            if field not in place_data or place_data[field] in [None, '']:
+                raise ValueError(f"{field} is required")
+
+        # Validation des champs
+        if not isinstance(place_data['title'], str) or len(place_data['title']) > 50:
+            raise ValueError("Invalid title")
+        if not isinstance(place_data['description'], str) or len(place_data['description']) > 3000:
+            raise ValueError("Invalid description")
+        if not isinstance(place_data['price'], (int, float)) or place_data['price'] <= 0:
+            raise ValueError("Invalid price")
+        if not isinstance(place_data['latitude'], (int, float)) or not (-90 <= place_data['latitude'] <= 90):
+            raise ValueError("Invalid latitude")
+        if not isinstance(place_data['longitude'], (int, float)) or not (-180 <= place_data['longitude'] <= 180):
+            raise ValueError("Invalid longitude")
+
         # 1. Extraire les IDs
         owner_id = place_data.get("owner_id")
         amenity_ids = place_data.get("amenities", [])
@@ -182,6 +204,22 @@ class HBnBFacade:
         # Ne surtout pas écraser owner
         if "owner_id" in place_data:
             place_data.pop("owner_id")
+
+        if "title" in place_data:
+            if not isinstance(place_data["title"], str) or not place_data["title"] or len(place_data["title"]) > 50:
+                raise ValueError("Invalid title")
+        if "description" in place_data:
+            if place_data["description"] is not None and (not isinstance(place_data["description"], str) or len(place_data["description"]) > 3000):
+                raise ValueError("Invalid description")
+        if "price" in place_data:
+            if not isinstance(place_data["price"], (int, float)) or place_data["price"] <= 0:
+                raise ValueError("Invalid price")
+        if "latitude" in place_data:
+            if not isinstance(place_data["latitude"], (int, float)) or not (-90 <= place_data["latitude"] <= 90):
+                raise ValueError("Invalid latitude")
+        if "longitude" in place_data:
+            if not isinstance(place_data["longitude"], (int, float)) or not (-180 <= place_data["longitude"] <= 180):
+                raise ValueError("Invalid longitude")
 
         # Si des amenities sont fournies : les mettre à jour aussi
         if "amenities" in place_data:
