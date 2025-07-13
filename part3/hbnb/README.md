@@ -261,9 +261,9 @@ http://127.0.0.1:5000/
 
 ```bash
 # Create a user
-curl -X POST http://localhost:5000/api/v1/users/ \
+curl -X POST http://localhost:5000/api/v1/admins/ \
   -H "Content-Type: application/json" \
-  -d '{"first_name": "Axel", "last_name": "Goré", "email": "axel.goré@gmail.com"}'
+  -d '{"first_name": "Axel", "last_name": "Goré", "email": "axel.goré@gmail.com", "password": "AxelStron123", "is_admin": false}'
 
 # Get all places
 curl http://localhost:5000/api/v1/places/
@@ -271,12 +271,42 @@ curl http://localhost:5000/api/v1/places/
 ### 🧪 Admin-only User Creation with JWT
 To create new users, a valid JWT token from an authenticated admin user is required.
 This enforces role-based access control at the API level.
-✅ Required Header
 ```
 Authorization: Bearer <admin_access_token>
 ```
+---
+### 📥 Example Request for JWT token (in swagger)
+```
+curl -X 'POST' \
+  'http://127.0.0.1:5000/api/v1/auth/login' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "admin@hbnb.io",
+  "password": "admin1234"
+}'
+```
+### Request URL:
+```
+http://127.0.0.1:5000/api/v1/auth/login
+```
+### 🔁 Response Body (in swagger)
+```
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1MjQxMTM1NCwianRpIjoiNGJlZGM5ZTctYzI0YS00MTBkLTgzODQtMTU2MTVmNTEzNzdjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJpZCI6IjM2YzkwNTBlLWRkZDMtNGMzYi05NzMxLTlmNDg3MjA4YmJjMSIsImlzX2FkbWluIjp0cnVlfSwibmJmIjoxNzUyNDExMzU0LCJjc3JmIjoiZTcxOTBjMTMtMmNkMi00NWMzLWE0MDYtZmUzZjVkMDk5NjhhIiwiZXhwIjoxNzUyNDEyMjU0fQ.3v2Z6kVG6IRKColMWhduNbemHhKrNP6DP1u0qbi_p2A"
+}
+```
+### 🔁 Response Headers (in swagger)
+```
+connection: close
+content-length: 430
+content-type: application/json
+date: Sun,13 Jul 2025 12:55:54 GMT
+server: Werkzeug/3.1.3 Python/3.12.3
+```
+---
 ### 📥 Example Request (with token)
-```curl
+```
 curl -X POST http://localhost:5000/api/v1/admins/ \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <your_admin_token>" \
@@ -303,7 +333,7 @@ You can test endpoints directly from the **Swagger UI** (interactive docs) avail
 
 http://localhost:5000/
 
-### 🔹 Example: `POST /api/v1/users/`
+### 🔹 Example: `POST /api/v1/admins/`
 
 #### 📤 Request Body (via Swagger "Try it out")
 
@@ -311,7 +341,9 @@ http://localhost:5000/
 {
   "first_name": "Axel",
   "last_name": "Goré",
-  "email": "axel.goré@gmail.com"
+  "email": "axel.goré@gmail.com",
+  "password": "AxelStrong123",
+  "is_admin": false
 }
 ```
 
