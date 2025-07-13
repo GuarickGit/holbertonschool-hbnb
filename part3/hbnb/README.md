@@ -277,14 +277,15 @@ Authorization: Bearer <admin_access_token>
 ```
 ### 📥 Example Request (with token)
 ```curl
-curl -X POST http://localhost:5000/api/v1/users/ \
+curl -X POST http://localhost:5000/api/v1/admins/ \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <your_admin_token>" \
   -d '{
     "first_name": "Samira",
     "last_name": "Roche",
-    "email": "samira@example.com",
+    "email": "samiraroche@gmail.com",
     "password": "MyStrongPass123"
+    "is_admin": false
   }'
   ```
 ### 🔁 Response
@@ -293,7 +294,7 @@ curl -X POST http://localhost:5000/api/v1/users/ \
   "id": "user-uuid",
   "first_name": "Samira",
   "last_name": "Roche",
-  "email": "samira@example.com",
+  "email": "samira@gmail.com",
   "is_admin": false
 }
 ```
