@@ -263,7 +263,7 @@ http://127.0.0.1:5000/
 # Create a user
 curl -X POST http://localhost:5000/api/v1/admins/ \
   -H "Content-Type: application/json" \
-  -d '{"first_name": "Axel", "last_name": "Goré", "email": "axel.goré@gmail.com", "password": "AxelStron123", "is_admin": false}'
+  -d '{"first_name": "Axel", "last_name": "Goré", "email": "axel.goré@gmail.com", "password": "AxelStrong123", "is_admin": false}'
 
 # Get all places
 curl http://localhost:5000/api/v1/places/
