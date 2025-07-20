@@ -1,29 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Place Details</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Details</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <main>
-        <section id="place-details">
-            <!-- Place details will be populated dynamically -->
-        </section>
-        <section id="reviews">
-            <!-- Reviews will be populated dynamically -->
-        </section>
-        <section id="add-review">
-            <h2>Add a Review</h2>
-            <form id="review-form">
-                <label for="review-text">Review:</label>
-                <textarea id="review-text" name="review-text" required></textarea>
+  <header>
+    <a href="index.html">
+      <img src="images/logo.png" alt="App Logo" class="logo">
+    </a>
+    <nav class="auth-controls">
+      <a href="login.html" class="login-button" id="login-link">Login</a>
+      <button id="logout-button" class="btn" style="display: none; margin-left: 1rem;">Logout</button>
+    </nav>
+  </header>
 
-                <button type="submit">Submit</button>
-            </form>
-        </section>
-    </main>
-    <script src="scripts.js"></script>
+  <main>
+    <div class="container">
+      <section id="place-details">
+        <div class="place-details">
+          <div class="place-gallery">
+            <div class="main-photo">
+              <img src="images/photo1.jpg" alt="Main photo">
+            </div>
+			<div class="thumbs">
+            <img src="images/photo2.jpg" alt="Thumb 1">
+            <img src="images/photo3.jpg" alt="Thumb 2">
+            <img src="images/photo4.jpg" alt="Thumb 3">
+			</div>
+          </div>
+
+          <div class="place-info">
+            <h2>Seventh Heaven Loft</h2>
+            <p><strong>Host:</strong> Tifa Lockhart</p>
+            <p><strong>Price per night:</strong> 600 Gils</p>
+            <p><strong>Description:</strong> Cozy studio above Midgar's legendary bar. Ideal for rebellious travelers and fans of signature cocktails.</p>
+            <p><strong>Amenities:</strong></p>
+            <ul>
+              <li>Jukebox</li>
+              <li>Air conditioning</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+	<section id="add-review">
+	  <h2 class="visually-hidden">Leave a Review Section</h2>
+      <div class="center">
+        <a href="add_review.html?id=1" class="add-review-button">Leave a review</a>
+      </div>
+    </section>
+
+    <section id="reviews">
+      <h2>Reviews</h2>
+      <div class="review-card">
+        <h3>Guarick</h3>
+        <p>Rating: ★★★★★</p>
+        <p>Great place, very quiet</p>
+      </div>
+      <div class="review-card">
+        <h3>Cloud Strife</h3>
+        <p>Rating: ★★★★★</p>
+        <p>A rajouter</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HBnB. All rights reserved.</p>
+  </footer>
+
+  <script src="scripts.js"></script>
 </body>
 </html>

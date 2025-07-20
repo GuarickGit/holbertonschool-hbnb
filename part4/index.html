@@ -8,21 +8,57 @@
 </head>
 <body>
     <header>
-        <nav>
-            <a href="login.html" id="login-link">Login</a>
+		<a href="index.html">
+			<img src="images/logo.png" alt="App Logo" class="logo">
+		</a>
+        <nav class="auth-controls">
+            <a href="login.html" class="login-button" id="login-link">Login</a>
+			<button id="logout-button" class="btn" style="display: none; margin-left: 1rem;">Logout</button>
         </nav>
     </header>
     <main>
         <section id="filter">
+			<h2>Available Places</h2>
             <label for="price-filter">Max Price:</label>
             <select id="price-filter">
                 <!-- Options will be populated dynamically -->
             </select>
         </section>
         <section id="places-list">
+			<div class="place-card" data-id="1">
+				<h3>Seventh Heaven Loft</h3>
+				<p>Price per night: 600 Gils</p>
+				<button class="details-button" data-id="1">View Details</button>
+			</div>
+			<div class="place-card" data-id="2">
+				<h3>Cosmo Canyon Retreat</h3>
+				<p>Price per night: 420 Gils</p>
+				<button class="details-button" data-id="2">View Details</button>
+			</div>
+
+			<div class="place-card" data-id="3">
+				<h3>Shinra Executive Suite</h3>
+				<p>Price per night: 1200 Gils</p>
+				<button class="details-button" data-id="3">View Details</button>
+			</div>
+
+			<div class="place-card" data-id="4">
+				<h3>Chocobo Ranch Cottage</h3>
+				<p>Price per night: 300 Gils</p>
+				<button class="details-button" data-id="4">View Details</button>
+			</div>
+
+			<div class="place-card" data-id="5">
+				<h3>Wutai Garden Villa</h3>
+				<p>Price per night: 650 Gils</p>
+				<button class="details-button" data-id="5">View Details</button>
+			</div>
             <!-- List of places will be populated dynamically -->
         </section>
     </main>
+	<footer>
+	<p>© 2025 HBnB. All rights reserved.</p>
+	</footer>
     <script src="scripts.js"></script>
 </body>
 </html>
