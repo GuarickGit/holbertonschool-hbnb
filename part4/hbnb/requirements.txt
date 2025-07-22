@@ -6,3 +6,4 @@ flask-jwt-extended==4.6.0
 PyJWT==2.8.0
 sqlalchemy
 flask-sqlalchemy
+flask-cors
