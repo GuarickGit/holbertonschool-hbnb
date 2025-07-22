@@ -33,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           alert('Login failed. Please check your credentials.');
         }
-
-        // Tu traiteras la réponse ici après
       } catch (error) {
         console.error('Error:', error);
       }
