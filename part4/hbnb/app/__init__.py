@@ -26,6 +26,8 @@ from werkzeug.utils import import_string
 from app.extensions import db, bcrypt
 from flask_jwt_extended import JWTManager
 
+from flask_cors import CORS
+
 jwt = JWTManager()
 
 def create_app(config_class="config.DevelopmentConfig"):
@@ -46,6 +48,7 @@ def create_app(config_class="config.DevelopmentConfig"):
         Flask: The configured Flask application.
     """
     app = Flask(__name__)
+    CORS(app, supports_credentials=True)
     app.config.from_object(import_string(config_class))
     db.init_app(app)
 
