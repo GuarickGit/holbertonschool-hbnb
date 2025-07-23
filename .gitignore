@@ -16414,3 +16414,5 @@ part4/hbnb/app/services/repositories/__pycache__/
 part4/hbnb/app/services/__pycache__/
 part4/hbnb/app/models/__pycache__/
 part4/hbnb/app/__pycache__/
+part4/hbnb/app/persistence/__pycache__/__init__.cpython-312.pyc
+part4/hbnb/app/api/v1/__pycache__/__init__.cpython-312.pyc
