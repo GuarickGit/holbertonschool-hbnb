@@ -48,7 +48,7 @@ def create_app(config_class="config.DevelopmentConfig"):
         Flask: The configured Flask application.
     """
     app = Flask(__name__)
-    CORS(app, supports_credentials=True)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:8000"}}, supports_credentials=True)
     app.config.from_object(import_string(config_class))
     db.init_app(app)
 
