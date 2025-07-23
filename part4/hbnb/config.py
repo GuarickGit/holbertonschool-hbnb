@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -18,6 +19,8 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(basedir, 'development.db')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7) # Expiration du Token
 
 
 # Dictionary to map environment names to their corresponding config classes
