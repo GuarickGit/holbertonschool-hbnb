@@ -34,7 +34,7 @@ place_input_admin_model = api.model('PlaceInput_Admin', {
     'price': fields.Float(required=True, description='Price per night'),
     'latitude': fields.Float(required=True, description='Latitude of the place'),
     'longitude': fields.Float(required=True, description='Longitude of the place'),
-    'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
+    # 'amenities': fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
 review_admin_model = api.model('Review_Admin', {
