@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const token = getcookie('token');
+  checkAuthentication();
+
+  const token = getCookie('token');
   const placeId = getPlaceIdFromURL();
 
   if (!token) {
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        const response= await fetch('http://localhost:5000/api/v1/reviews', {
+        const response= await fetch('http://localhost:5000/api/v1/reviews/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
