@@ -96,6 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const placeId = getPlaceIdFromURL();
   const addReviewSection = document.getElementById('add-review');
 
+  const reviewLink = document.querySelector('.add-review-button');
+  if (reviewLink && placeId) {
+    reviewLink.setAttribute('href', `add_review.html?id=${placeId}`);
+  }
+
   console.log("DOM loaded", { token, placeId });
 
   if (addReviewSection) {
