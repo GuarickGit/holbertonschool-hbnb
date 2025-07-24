@@ -75,7 +75,7 @@ function displayPlaceDetails(place) {
     reviewCard.className = 'review-card';
 
     const author = document.createElement('h3');
-    author.textContent = review.user_id; // Placeholder temporaire
+    author.textContent = review.user_name;
     reviewCard.appendChild(author);
 
     const rating = document.createElement('p');
