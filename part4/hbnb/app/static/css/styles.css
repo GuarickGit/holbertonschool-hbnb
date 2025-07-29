@@ -1,0 +1,110 @@
+/*
+  This is a SAMPLE File to get you started. Follow the instructions on the project to complete the tasks.
+  You'll probably need to override some of theese styles.
+*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+}
+
+header nav {
+  display: flex;
+  justify-content:flex-start;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  height: 50px;
+}
+
+.login-button {
+  text-decoration: none;
+  color: #fff;
+  background: red;
+  padding: 8px 15px;
+  border-radius: 5px;
+  justify-content: flex-end;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #333;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+}
+
+main {
+    padding: 2rem;
+    margin: 0 auto;
+    text-align: center;
+    flex: 1;
+}
+
+a {
+	color: #ddd;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.place-card {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    max-width: 350px;
+    max-height: 350px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background-color: #333;
+    color: #ddd;
+    text-align: center;
+}
+
+.place {
+  text-align: center; /* Centre tout le contenu à l'intérieur */
+}
+
+.place img {
+  max-width: 100%;        /* Empêche l'image de dépasser */
+  height: auto;           /* Garde les proportions */
+  display: block;         /* Nécessaire avec margin auto */
+  margin: 0 auto 10px;    /* Centre horizontalement + marge en bas */
+  border-radius: 10px;    /* (optionnel) pour un style arrondi */
+}
+
+footer {
+    text-align: center;
+}
