@@ -77,7 +77,10 @@ class ReviewList(Resource):
             'id': new_review.id,
             'text': new_review.text,
             'rating': new_review.rating,
-            'user_id': new_review.user.id,
+            'user': {
+                'id': new_review.user.id,
+                'first_name': new_review.user.first_name
+            },
             'place_id': new_review.place.id
         }, 201
 

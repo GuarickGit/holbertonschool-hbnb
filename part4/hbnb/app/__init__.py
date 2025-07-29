@@ -13,7 +13,7 @@ Modules registered:
 - Admins
 """
 
-from flask import Flask
+from flask import Flask, render_template, redirect, url_for
 from flask_restx import Api
 from app.api.v1.users import api as users_ns
 from app.api.v1.amenities import api as amenities_ns
@@ -27,6 +27,7 @@ from app.extensions import db, bcrypt
 from flask_jwt_extended import JWTManager
 
 jwt = JWTManager()
+
 
 def create_app(config_class="config.DevelopmentConfig"):
     """
@@ -50,20 +51,20 @@ def create_app(config_class="config.DevelopmentConfig"):
     db.init_app(app)
 
     authorizations = {
-    'Bearer': {
-        'type': 'apiKey',
-        'in': 'header',
-        'name': 'Authorization',
-        'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"'
+        'Bearer': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {token}"'
+        }
     }
-}
-     # Initialize RESTX API with metadata
+    # Initialize RESTX API with metadata
     api = Api(app,
-            version='1.0',
-            title='HBnB API',
-            description='HBnB Application API',
-            authorizations=authorizations,
-            security='Bearer')
+              version='1.0',
+              title='HBnB API',
+              description='HBnB Application API',
+              authorizations=authorizations,
+              security='Bearer')
 
     bcrypt.init_app(app)
     jwt.init_app(app)
@@ -80,5 +81,17 @@ def create_app(config_class="config.DevelopmentConfig"):
     api.add_namespace(auth_ns, path='/api/v1/auth')
     # Register the admin namespace
     api.add_namespace(admins_ns, path='/api/v1/admins')
+
+    @app.route('/login')
+    def login():
+        return render_template('login.html')
+
+    @app.route('/index')
+    def index():
+        return render_template('index.html')
+
+    @app.route('/place')
+    def place():
+        return render_template('place.html')
 
     return app

@@ -159,6 +159,7 @@ class PlaceResource(Resource):
             'id': place.id,
             'title': place.title,
             'description': place.description,
+            'price': place.price,
             'latitude': place.latitude,
             'longitude': place.longitude,
             'owner': {
@@ -175,7 +176,10 @@ class PlaceResource(Resource):
                     'id': r.id,
                     'text': r.text,
                     'rating': r.rating,
-                    'user_id': r.user.id
+                    'user': {
+                        'id': r.user.id,
+                        'first_name': r.user.first_name
+                    }
                 } for r in place.reviews
             ]
         }, 200
