@@ -164,4 +164,3 @@ python3 run.py
 ## 👥 Authors
 
 - **Roche Samira** – [@StrawberSam](https://github.com/StrawberSam)
-
